@@ -1,0 +1,16 @@
+{
+  "name": "Il mio anno",
+  "short_name": "Il mio anno",
+  "description": "Abitudini, obiettivi e percorso dell'anno",
+  "lang": "it",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EFE9E2",
+  "theme_color": "#5A3E2E",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

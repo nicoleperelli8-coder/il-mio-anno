@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Il mio anno</title>
+<meta name="theme-color" content="#5A3E2E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Il mio anno">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EFE9E2;--card:#FBF8F5;--track:#DDD3C8;--border:#D3C7BA;--ink:#2B211C;--muted:#6A5A4E;
+  --primary:#5A3E2E;--onp:#FBF8F5;--sage:#5E7358;--sage2:#8AA283;--rosa:#EBC9C4;--rosa2:#E4B8B2;--rosa3:#D49A94;
+  --onsage:#FBF8F5;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#1F1814;--card:#2A211C;--track:#3B2F28;--border:#4A3B32;--ink:#F1E8DF;--muted:#B8A799;
+    --primary:#D9B59A;--onp:#2B211C;--sage:#8FAA88;--sage2:#7B9575;--rosa:#5A3B38;--rosa2:#8A5C57;--rosa3:#B87D77;--onsage:#1F1814;}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:16px;line-height:1.5;
+  padding:env(safe-area-inset-top) 0 calc(86px + env(safe-area-inset-bottom)) 0}
+#app{max-width:760px;margin:0 auto;padding:18px 16px}
+h1{font-size:26px;margin:0;font-weight:800;letter-spacing:-.2px}
+h2{font-size:19px;margin:0 0 4px;font-weight:800}
+h3{font-size:16px;margin:0 0 6px;font-weight:700}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.st{font-size:13px;color:var(--muted);padding-top:6px;text-align:right;max-width:46%}
+.card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:18px;margin-bottom:14px}
+.card.soft{background:var(--rosa);border-color:transparent}
+.card.soft .muted{color:var(--ink);opacity:.75}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{min-height:44px;border-radius:999px;border:1.5px solid var(--primary);background:transparent;color:var(--primary);padding:8px 18px;font-weight:700}
+.btn.fill{background:var(--primary);color:var(--onp)}
+.btn.sm{min-height:44px;padding:6px 14px;font-size:14px}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row.sp{justify-content:space-between}
+input[type=text],textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--border);border-radius:16px;padding:11px 14px;min-height:44px}
+textarea{resize:vertical;min-height:110px;line-height:1.5}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
+:focus-visible{outline:3px solid var(--sage);outline-offset:2px}
+.gr{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.hab{display:flex;align-items:center;gap:12px;width:100%;text-align:left;min-height:48px;padding:8px 14px;border-radius:16px;border:1.5px solid var(--border);background:var(--bg);font-weight:600}
+.hab.on{background:var(--sage);border-color:var(--sage);color:var(--onsage)}
+.ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--outline,#8B7A6C);display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.hab.on .ck{border-color:var(--onsage)}
+.glasses{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.gl{width:44px;height:44px;border-radius:14px;border:1.5px solid var(--border);background:var(--bg);font-size:18px}
+.gl.on{background:var(--sage2);border-color:var(--sage2)}
+.wbox{padding:10px 14px;border-radius:16px;border:1.5px solid var(--border);background:var(--bg)}
+.wbox.on{border-color:var(--sage)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-height:44px;padding:6px 16px;border-radius:999px;border:1.5px solid var(--border);background:var(--bg);font-weight:700}
+.chip.on{background:var(--primary);color:var(--onp);border-color:var(--primary)}
+.badge{display:inline-block;font-size:12px;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--rosa);color:#2B211C}
+.badge.ok{background:var(--sage);color:var(--onsage)}
+.step{display:flex;gap:14px;align-items:center;width:100%;text-align:left;border:1px solid var(--border);background:var(--card);border-radius:20px;padding:14px;margin-bottom:10px;min-height:64px}
+.num{width:38px;height:38px;border-radius:50%;background:var(--rosa);color:#2B211C;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.step.done .num{background:var(--sage);color:var(--onsage)}
+.step b{display:block}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--border);display:flex;justify-content:center;gap:6px;padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
+nav button{flex:1;max-width:220px;min-height:48px;border-radius:999px;border:none;background:transparent;font-weight:800;color:var(--muted)}
+nav button[aria-current=page]{background:var(--primary);color:var(--onp)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px}
+.cal .h{font-size:12px;text-align:center;color:var(--muted);font-weight:700}
+.cal .c{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:var(--track);color:var(--ink)}
+.cal .c.l1{background:var(--rosa)} .cal .c.l2{background:var(--rosa2)} .cal .c.l3{background:var(--sage);color:var(--onsage)}
+.cal .c.t{outline:2.5px solid var(--primary);outline-offset:1px}
+.cal .c.e{background:transparent}
+.goal{display:flex;gap:10px;align-items:center;padding:6px 0}
+.goal .tx{flex:1}
+.goal.done .tx{text-decoration:line-through;opacity:.6}
+.x{width:44px;height:44px;border:none;background:transparent;font-size:20px;color:var(--muted)}
+details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.wheel{display:block;margin:6px auto;max-width:340px;width:100%;height:auto}
+.scores{display:flex;gap:6px;flex-wrap:wrap}
+.scores button{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg);font-weight:800}
+.scores button.on{background:var(--primary);color:var(--onp);border-color:var(--primary)}
+.lbl{font-weight:700;font-size:14px;margin:12px 0 4px;display:block}
+@media (prefers-reduced-motion:no-preference){.hab,.gl,.chip,.btn{transition:background .15s,border-color .15s}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top"><div><h1 id="ttl">Il mio anno</h1><div class="muted small" id="sub"></div></div><div class="st" id="st" role="status" aria-live="polite"></div></div>
+  <main id="main"></main>
+</div>
+<nav aria-label="Sezioni">
+  <button class="tb" data-a="tab" data-v="oggi">Oggi</button>
+  <button class="tb" data-a="tab" data-v="anno">Anno</button>
+  <button class="tb" data-a="tab" data-v="mese">Mese</button>
+</nav>
+<input type="file" id="impf" accept="application/json,.json" hidden>
+<script>
+(function(){
+'use strict';
+var LS='nicole-app-abitudini-v1';
+var SPH=['Salute e corpo','Relazioni','Famiglia','Lavoro','Soldi','Crescita personale','Tempo libero','Casa e ambiente'];
+var WCOL=['#5A3E2E','#E8C4C0','#5E7358','#C9A27A','#B7C7AE','#3A2C25','#D49A94','#8B5E3C'];
+var PH=['Il cervello nota ciò su cui lo alleno a guardare: oggi cosa scelgo di notare?',
+'Quello che ripeto a me stessa diventa il filtro con cui leggo la giornata.',
+'Un piccolo gesto ripetuto vale più di un grande slancio una volta sola.',
+'Dove metto l\'attenzione, lì cresce l\'energia.',
+'Non devo fare tutto: devo fare la prossima cosa piccola.',
+'Gratitudine e attenzione vanno insieme: noto di più ciò che ringrazio.',
+'Oggi scelgo con cosa nutrire la mia mente.',
+'Immaginare con chiarezza il risultato aiuta il cervello a riconoscere le occasioni.'];
+var STEPS=[
+ ['liberare','Liberare lo spazio','Fai spazio prima di cominciare: fisico, digitale e mentale.'],
+ ['perdono','Lettera del perdono','Una lettera per lasciare andare ciò che pesa.'],
+ ['grazie','Grazie a me stessa','Riconosci quello che hai fatto per te.'],
+ ['ruota','Ruota della vita','A che punto sono oggi nelle 8 sfere, da 1 a 10.'],
+ ['credenze','Le mie credenze','Cosa credo di me, del denaro, del lavoro, delle relazioni.'],
+ ['realta','La mia realtà','La lettera della vita che voglio manifestare.'],
+ ['intenzione','Intenzione dell\'anno','La direzione che dà senso a tutto l\'anno.'],
+ ['desideri','Desideri per sfera','Cosa desidero in ciascuna sfera della vita.'],
+ ['obiettivi','I miei 10 obiettivi','I 10 obiettivi prioritari dell\'anno.'],
+ ['azioni','Azioni e abitudini','Cosa faccio una volta sola e cosa diventa un\'abitudine.']
+];
+var S;
+var tab='oggi',cur=new Date(),mcur=new Date(),step=null,selSph=0;
+var $=function(s){return document.querySelector(s)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function pad(n){return String(n).padStart(2,'0')}
+function dkey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function mkey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)}
+function uid2(){return 'h'+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36)}
+
+function fresh(){
+  return {v:1,u:0,lastBackup:0,
+    habits:[{id:'h-acqua',name:'Bere 2 litri d\'acqua',kind:'water'},{id:'h-palestra',name:'Palestra',kind:'check'}],
+    days:{},months:{},phrases:null,
+    year:{notes:{},scores:[0,0,0,0,0,0,0,0],wnotes:['','','','','','','',''],spheres:SPH.slice(),
+      desires:['','','','','','','',''],
+      goals:Array.from({length:10},function(){return {t:'',s:0,k:'once'}})}};
+}
+function norm(o){
+  var f=fresh();o=o||{};
+  o.habits=Array.isArray(o.habits)?o.habits:f.habits;
+  o.days=o.days||{};o.months=o.months||{};
+  o.year=o.year||f.year;var y=o.year,fy=f.year;
+  y.notes=y.notes||{};
+  ['scores','wnotes','spheres','desires','goals'].forEach(function(k){if(!Array.isArray(y[k]))y[k]=fy[k]});
+  while(y.goals.length<10)y.goals.push({t:'',s:0,k:'once'});
+  o.u=o.u||0;o.lastBackup=o.lastBackup||0;return o;
+}
+function loadLocal(){try{var r=localStorage.getItem(LS);if(r)return norm(JSON.parse(r))}catch(e){}return fresh()}
+
+function setStatus(t){var e=$('#st');if(e)e.textContent=t}
+
+/* ---------- SALVATAGGIO: su questo dispositivo + foglio Google ---------- */
+var link=null,nolink=false,syncT=null,syncing=false,pending=false,again=false,syncMsg='';
+try{var _l=localStorage.getItem(LS+'-link');if(_l)link=JSON.parse(_l);nolink=localStorage.getItem(LS+'-nolink')==='1'}catch(e){}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(S));return true}catch(e){return false}}
+function updStatus(){setStatus(link?(syncMsg||'Collegata al foglio ✓'):'Salvato ✓ (solo qui)')}
+function save(){
+  if(!saveLocal()){setStatus('⚠️ Non riesco a salvare: fai un backup');return false}
+  if(link)setStatus('Salvataggio…');else setStatus('Salvato ✓ (solo qui)');
+  return true;
+}
+function touch(){S.u=Date.now();save();if(link)schedulePush()}
+function api(method,body){
+  var opt={method:method,redirect:'follow'},url=link.url;
+  if(method==='GET')url+=(url.indexOf('?')<0?'?':'&')+'t='+encodeURIComponent(link.t)+'&_='+Date.now();
+  else{opt.headers={'Content-Type':'text/plain;charset=utf-8'};opt.body=JSON.stringify(body)}
+  return fetch(url,opt).then(function(r){return r.json()});
+}
+function schedulePush(){clearTimeout(syncT);syncT=setTimeout(push,1200)}
+function failMsg(r){return r&&r.err==='auth'?'⚠️ Codice non valido':'⚠️ Foglio non raggiungibile'}
+function applyRemote(d){S=norm(JSON.parse(JSON.stringify(d)));saveLocal();render()}
+function typing(){var a=document.activeElement;return !!a&&(a.tagName==='TEXTAREA'||a.tagName==='INPUT')}
+function endSync(){syncing=false;if(again){again=false;push()}else if(pending){pending=false;push()}else updStatus()}
+function push(){
+  if(!link)return;
+  if(syncing){pending=true;return}
+  syncing=true;
+  api('POST',{t:link.t,u:S.u,data:S}).then(function(r){
+    if(r&&r.ok)syncMsg='Salvato nel foglio ✓';
+    else if(r&&r.conflict&&r.data){if(typing())syncMsg='Dal foglio ci sono novità: chiudi e riapri l\'app';else{applyRemote(r.data);syncMsg='Aggiornata dal foglio ✓'}}
+    else syncMsg=failMsg(r);
+  }).catch(function(){syncMsg='Salvato qui, il foglio si aggiorna appena c\'è rete'}).then(endSync);
+}
+function pull(){
+  if(!link)return;
+  if(syncing){return}
+  syncing=true;setStatus('Controllo il foglio…');
+  api('GET').then(function(r){
+    if(!r||!r.ok){syncMsg=failMsg(r);return}
+    if(r.data&&(r.u||0)>(S.u||0)){
+      if(typing()){syncMsg='Dal foglio ci sono novità: chiudi e riapri l\'app';return}
+      applyRemote(r.data);syncMsg='Aggiornata dal foglio ✓';
+    }else if((S.u||0)>(r.u||0)){again=true;syncMsg='Salvataggio…'}
+    else syncMsg='Salvato nel foglio ✓';
+  }).catch(function(){syncMsg='Offline: uso i dati salvati qui'}).then(endSync);
+}
+function doLink(){
+  var v='';document.querySelectorAll('.lcode').forEach(function(t){if(t.value.trim())v=t.value.trim()});
+  var o;
+  try{o=JSON.parse(atob(v.replace(/\s+/g,'')))}catch(e){o=null}
+  if(!o||!o.url||!o.t||String(o.url).indexOf('https://script.google.com/')!==0){alert('Il codice non sembra giusto. Copialo di nuovo per intero e incollalo.');return}
+  link={url:o.url,t:o.t};
+  try{localStorage.setItem(LS+'-link',JSON.stringify(link))}catch(e){}
+  syncMsg='';render();pull();
+}
+function doUnlink(){
+  if(!confirm('Vuoi scollegare il foglio Google? I dati restano su questo dispositivo.'))return;
+  link=null;try{localStorage.removeItem(LS+'-link')}catch(e){}
+  render();updStatus();
+}
+
+function setPath(obj,path,val){
+  var p=path.split('.'),o=obj;
+  for(var i=0;i<p.length-1;i++){
+    if(o[p[i]]==null||typeof o[p[i]]!=='object')o[p[i]]=/^\d+$/.test(p[i+1])?[]:{};
+    o=o[p[i]];
+  }
+  o[p[p.length-1]]=val;
+}
+function day(k){
+  var d=S.days[k];
+  if(!d)d=S.days[k]={grat:['','',''],done:{},water:0,ans:'',sfogo:'',fatto:''};
+  if(!Array.isArray(d.grat))d.grat=['','',''];
+  while(d.grat.length<3)d.grat.push('');
+  d.done=d.done||{};d.water=d.water||0;
+  return d;
+}
+function isDone(h,d){return h.kind==='water'?(d.water||0)>=8:!!d.done[h.id]}
+function ratio(k){
+  var d=S.days[k];if(!d||!S.habits.length)return 0;
+  var n=0;S.habits.forEach(function(h){if(isDone(h,d))n++});
+  return n/S.habits.length;
+}
+var MESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+var GIORNI=['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
+
+/* ---------- COLLEGAMENTO FOGLIO ---------- */
+function vLink(){
+  var h='<h3 style="margin-top:6px">Foglio Google</h3>';
+  if(link){
+    h+='<p class="small muted">I dati vengono salvati nel tuo foglio Google "Il mio anno – dati", così li ritrovi su telefono e computer.</p>';
+    h+='<div class="row"><button class="btn fill sm" data-a="sync">Sincronizza ora</button><button class="btn sm" data-a="lku">Scollega</button></div>';
+  }else{
+    h+='<p class="small muted">Incolla qui il codice di collegamento per salvare i dati nel tuo foglio Google.</p>';
+    h+='<textarea class="lcode" style="min-height:70px" placeholder="Codice di collegamento" aria-label="Codice di collegamento"></textarea>';
+    h+='<button class="btn fill sm" style="margin-top:8px" data-a="lk">Collega</button>';
+  }
+  return h;
+}
+function vBanner(){
+  if(link||nolink)return '';
+  return '<div class="card"><h2>Collega il tuo foglio Google</h2><p class="muted small">Per non perdere mai i dati e ritrovarli su tutti i dispositivi, incolla il codice di collegamento che ti ho dato.</p>'+
+    '<textarea class="lcode" style="min-height:70px" placeholder="Codice di collegamento" aria-label="Codice di collegamento"></textarea>'+
+    '<div class="row" style="margin-top:8px"><button class="btn fill sm" data-a="lk">Collega</button><button class="btn sm" data-a="lkno">Più tardi</button></div></div>';
+}
+
+/* ---------- BACKUP ---------- */
+function markBackup(){S.lastBackup=Date.now();touch();render()}
+function exportData(){
+  var json=JSON.stringify(S,null,1),name='il-mio-anno-'+dkey(new Date())+'.json';
+  var file;
+  try{file=new File([json],name,{type:'application/json'})}catch(e){file=null}
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file],title:'Backup Il mio anno'}).then(markBackup).catch(function(){});
+    return;
+  }
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+  a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1500);
+  markBackup();
+}
+function importData(file){
+  if(!file)return;
+  var r=new FileReader();
+  r.onload=function(){
+    var o;
+    try{o=JSON.parse(r.result);if(!o||typeof o!=='object'||(!o.year&&!o.days&&!o.habits))throw new Error('x')}
+    catch(e){alert('Questo file non sembra un backup di "Il mio anno".');return}
+    if(!confirm('Vuoi sostituire i dati di questo dispositivo con quelli del backup?'))return;
+    S=norm(o);touch();render();
+  };
+  r.readAsText(file);
+}
+function vBackup(){
+  var lb=S.lastBackup?new Date(S.lastBackup):null;
+  var txt=lb?('Ultimo backup: '+lb.getDate()+' '+MESI[lb.getMonth()]+' '+lb.getFullYear()):'Non hai ancora fatto nessun backup.';
+  var old=!lb||(Date.now()-S.lastBackup>14*86400000);
+  var h='<div class="card"><details><summary>Salvataggio e backup</summary>';
+  h+=vLink();
+  h+='<h3 style="margin-top:14px">Backup su file</h3>';
+  h+='<p class="small muted">Una copia di sicurezza in più: un file che puoi conservare, per esempio in Drive o nelle note.</p>';
+  h+='<p class="small"><b>'+txt+'</b>'+(old&&Object.keys(S.days).length?' Ti consiglio di farne uno.':'')+'</p>';
+  h+='<div class="row"><button class="btn fill sm" data-a="bkx">Fai il backup</button><button class="btn sm" data-a="bki">Ripristina da backup</button></div>';
+  h+='</details></div>';
+  return h;
+}
+
+/* ---------- OGGI ---------- */
+function vOggi(){
+  var k=dkey(cur),d=day(k),today=k===dkey(new Date()),hr=new Date().getHours();
+  var ph=(S.phrases&&S.phrases.length)?S.phrases:PH;
+  var idx=Math.floor(Date.UTC(cur.getFullYear(),cur.getMonth(),cur.getDate())/86400000)%ph.length;
+  var nd=0;S.habits.forEach(function(h){if(isDone(h,d))nd++});
+  var h='';
+  h+='<div class="row sp" style="margin-bottom:12px"><button class="btn sm" data-a="dprev" aria-label="Giorno precedente">‹</button>'+
+     '<div style="text-align:center"><b>'+GIORNI[cur.getDay()]+' '+cur.getDate()+' '+MESI[cur.getMonth()]+'</b>'+(today?'':'<br><button class="btn sm" data-a="dtoday" style="margin-top:4px">Torna a oggi</button>')+'</div>'+
+     '<button class="btn sm" data-a="dnext" aria-label="Giorno successivo"'+(today?' disabled':'')+'>›</button></div>';
+  h+=vBanner();
+  h+='<div class="card soft"><h3>Pensiero del giorno</h3><p style="margin:0;font-size:18px;font-weight:600">'+esc(ph[idx])+'</p></div>';
+  /* mattina */
+  h+='<div class="card"><h2>☀️ Mattina – gratitudine</h2><p class="muted small">Scrivi almeno 3 cose per cui sei grata. Puoi aggiungerne quante vuoi.</p>';
+  h+='<div class="gr">'+d.grat.map(function(g,i){return '<input type="text" data-p="days.'+k+'.grat.'+i+'" value="'+esc(g)+'" placeholder="Sono grata per… ('+(i+1)+')" aria-label="Gratitudine '+(i+1)+'">'}).join('')+'</div>';
+  h+='<button class="btn sm" data-a="addgrat">+ Aggiungi un\'altra</button>';
+  if(today&&hr<12)h+='<p class="small muted" style="margin:10px 0 0">È mattina: questo è il momento giusto per questo spazio.</p>';
+  h+='</div>';
+  /* abitudini */
+  h+='<div class="card"><div class="row sp"><h2 style="margin:0">Le mie abitudini</h2><span class="badge'+(S.habits.length&&nd===S.habits.length?' ok':'')+'">'+nd+' di '+S.habits.length+'</span></div><div class="gr">';
+  if(!S.habits.length)h+='<p class="muted small">Non hai ancora abitudini. Aggiungine una qui sotto.</p>';
+  S.habits.forEach(function(hb){
+    if(hb.kind==='water'){
+      var w=d.water||0,on=w>=8;
+      h+='<div class="wbox'+(on?' on':'')+'"><div class="row sp"><b>'+esc(hb.name)+'</b><span class="small muted">'+(w*0.25).toString().replace('.',',')+' L</span></div><div class="glasses">';
+      for(var i=1;i<=8;i++)h+='<button class="gl'+(i<=w?' on':'')+'" data-a="water" data-v="'+i+'" aria-label="Bicchiere '+i+'" aria-pressed="'+(i<=w)+'">💧</button>';
+      h+='</div><div class="small muted" style="margin-top:6px">Ogni goccia è un bicchiere da 0,25 L</div></div>';
+    }else{
+      var o=!!d.done[hb.id];
+      h+='<button class="hab'+(o?' on':'')+'" data-a="hab" data-v="'+esc(hb.id)+'" aria-pressed="'+o+'"><span class="ck">'+(o?'✓':'')+'</span>'+esc(hb.name)+'</button>';
+    }
+  });
+  h+='</div>';
+  h+='<details><summary>Gestisci le abitudini</summary>';
+  h+=S.habits.map(function(hb){return '<div class="goal"><span class="tx">'+esc(hb.name)+(hb.kind==='water'?' <span class="badge">acqua</span>':'')+'</span><button class="x" data-a="delhab" data-v="'+esc(hb.id)+'" aria-label="Elimina '+esc(hb.name)+'">✕</button></div>'}).join('');
+  h+='<div class="row" style="margin-top:6px"><input type="text" id="newhab" placeholder="Nuova abitudine (es. camminata)" style="flex:1" aria-label="Nuova abitudine"><button class="btn fill sm" data-a="addhab">Aggiungi</button></div></details></div>';
+  /* sera */
+  h+='<div class="card"><h2>🌙 Sera – fermarsi un momento</h2>';
+  if(today&&hr>=18)h+='<p class="small muted">È sera: prenditi qualche minuto per te.</p>';
+  h+='<h3 style="margin-top:10px">Quello che sento, penso, dico e faccio oggi mi porta a vivere la vita che desidero?</h3><div class="chips">';
+  [['si','Sì'],['parte','In parte'],['no','Non oggi']].forEach(function(a){h+='<button class="chip'+(d.ans===a[0]?' on':'')+'" data-a="ans" data-v="'+a[0]+'" aria-pressed="'+(d.ans===a[0])+'">'+a[1]+'</button>'});
+  h+='</div><label class="lbl" for="sf">Sfogo libero</label><textarea id="sf" data-p="days.'+k+'.sfogo" placeholder="Scrivi quello che ti va: com\'è andata, cosa ti pesa, cosa ti ha fatto stare bene…">'+esc(d.sfogo)+'</textarea>';
+  h+='<label class="lbl" for="ft">Cosa ho fatto davvero oggi</label><textarea id="ft" data-p="days.'+k+'.fatto" placeholder="Le cose concrete che ho fatto, anche piccole.">'+esc(d.fatto)+'</textarea></div>';
+  /* frasi */
+  h+='<div class="card"><details><summary>Le mie frasi del giorno</summary><p class="small muted">Una frase per riga. Ruotano ogni giorno. Se lasci vuoto, uso quelle di base.</p><textarea data-ph="1" aria-label="Frasi del giorno" style="min-height:140px">'+esc((S.phrases&&S.phrases.length?S.phrases:PH).join('\n'))+'</textarea></details></div>';
+  h+=vBackup();
+  return h;
+}
+
+/* ---------- ANNO ---------- */
+function stepDone(key){
+  var y=S.year;
+  if(key==='ruota')return y.scores.some(function(s){return s>0});
+  if(key==='desideri')return y.desires.some(function(t){return t&&t.trim()});
+  if(key==='obiettivi')return y.goals.some(function(g){return g.t&&g.t.trim()});
+  if(key==='azioni')return y.goals.some(function(g){return g.t&&g.t.trim()&&g.k==='cost'});
+  if(key==='grazie')return !!((y.notes.grazie1||'').trim()||(y.notes.grazie2||'').trim());
+  return !!(y.notes[key]||'').trim();
+}
+function vAnno(){
+  var h='';
+  if(step==null){
+    var n=0;STEPS.forEach(function(s){if(stepDone(s[0]))n++});
+    h+='<div class="card soft"><h2>Il percorso dell\'anno</h2><p class="muted" style="margin:0">Dieci passi, in ordine, come sul quaderno. Hai compilato '+n+' passi su 10. Puoi tornarci quando vuoi.</p></div>';
+    STEPS.forEach(function(s,i){
+      var dn=stepDone(s[0]);
+      h+='<button class="step'+(dn?' done':'')+'" data-a="step" data-v="'+i+'"><span class="num">'+(dn?'✓':(i+1))+'</span><span><b>'+esc(s[1])+'</b><span class="muted small">'+esc(s[2])+'</span></span></button>';
+    });
+    return h;
+  }
+  var s=STEPS[step],k=s[0],y=S.year;
+  h+='<button class="btn sm" data-a="back" style="margin-bottom:12px">‹ Tutti i passi</button>';
+  h+='<div class="card"><div class="row"><span class="num">'+(step+1)+'</span><h2 style="margin:0">'+esc(s[1])+'</h2></div><p class="muted small" style="margin-top:8px">'+esc(s[2])+'</p>';
+  if(k==='liberare'||k==='perdono'||k==='credenze'||k==='realta'){
+    var pl={liberare:'Cosa voglio lasciare andare? Cassetti, armadi, file, contatti, pensieri…',perdono:'Cara/o … ti perdono per…',credenze:'Cosa credo di me, dei soldi, del lavoro, delle relazioni? Quali credenze mi aiutano e quali mi frenano?',realta:'È un anno dopo e la mia vita è così…'}[k];
+    h+='<textarea data-p="year.notes.'+k+'" style="min-height:260px" placeholder="'+esc(pl)+'" aria-label="'+esc(s[1])+'">'+esc(y.notes[k]||'')+'</textarea>';
+  }else if(k==='grazie'){
+    h+='<label class="lbl" for="g1">Prima lista</label><textarea id="g1" data-p="year.notes.grazie1" style="min-height:180px" placeholder="Grazie a me stessa per…">'+esc(y.notes.grazie1||'')+'</textarea>';
+    h+='<label class="lbl" for="g2">Seconda lista</label><textarea id="g2" data-p="year.notes.grazie2" style="min-height:180px" placeholder="Seconda lista, come sul foglio">'+esc(y.notes.grazie2||'')+'</textarea>';
+  }else if(k==='intenzione'){
+    h+='<label class="lbl" for="i1">La mia intenzione per l\'anno</label><textarea id="i1" data-p="year.notes.intenzione" style="min-height:200px" placeholder="Quest\'anno scelgo di…">'+esc(y.notes.intenzione||'')+'</textarea>';
+    h+='<label class="lbl" for="i2">In una parola o frase breve</label><input type="text" id="i2" data-p="year.notes.parola" value="'+esc(y.notes.parola||'')+'" placeholder="La mia parola dell\'anno">';
+  }else if(k==='desideri'){
+    for(var i=0;i<8;i++)h+='<label class="lbl" for="de'+i+'">'+esc(y.spheres[i])+'</label><textarea id="de'+i+'" data-p="year.desires.'+i+'" style="min-height:90px" placeholder="Cosa desidero qui…">'+esc(y.desires[i]||'')+'</textarea>';
+  }else if(k==='ruota'){
+    h+=wheelSvg();
+    h+='<div class="chips" style="margin:10px 0">'+y.spheres.map(function(n,i){return '<button class="chip'+(i===selSph?' on':'')+'" data-a="sph" data-v="'+i+'" aria-pressed="'+(i===selSph)+'">'+esc(n)+'</button>'}).join('')+'</div>';
+    h+='<b>'+esc(y.spheres[selSph])+'</b><span class="muted small"> – quanto sono soddisfatta oggi?</span>';
+    h+='<div class="scores" style="margin:8px 0">';
+    for(var j=1;j<=10;j++)h+='<button data-a="score" data-v="'+j+'" class="'+(y.scores[selSph]===j?'on':'')+'" aria-pressed="'+(y.scores[selSph]===j)+'">'+j+'</button>';
+    h+='</div><label class="lbl" for="wn">Cosa scrivo su questa sfera</label><textarea id="wn" data-p="year.wnotes.'+selSph+'" placeholder="Perché questo voto? Cosa servirebbe per salire di un punto?">'+esc(y.wnotes[selSph]||'')+'</textarea>';
+    h+='<details style="margin-top:8px"><summary>Rinomina le sfere</summary>'+y.spheres.map(function(n,i){return '<input type="text" style="margin:4px 0" data-p="year.spheres.'+i+'" value="'+esc(n)+'" aria-label="Nome sfera '+(i+1)+'">'}).join('')+'<p class="small muted">Dopo aver rinominato, esci e rientra per vedere i nomi aggiornati ovunque.</p></details>';
+  }else if(k==='obiettivi'){
+    h+='<p class="small muted">Per ogni obiettivo scegli la sfera e se è "una tantum" (lo fai e basta) o "costante" (diventa un\'abitudine).</p>';
+    y.goals.forEach(function(g,i){
+      h+='<div style="border-top:1px solid var(--border);padding:10px 0"><input type="text" data-p="year.goals.'+i+'.t" value="'+esc(g.t)+'" placeholder="Obiettivo '+(i+1)+'" aria-label="Obiettivo '+(i+1)+'">'+
+         '<div class="row" style="margin-top:6px"><select data-p="year.goals.'+i+'.s" data-n="1" aria-label="Sfera obiettivo '+(i+1)+'" style="flex:1">'+y.spheres.map(function(n,si){return '<option value="'+si+'"'+(g.s===si?' selected':'')+'>'+esc(n)+'</option>'}).join('')+'</select>'+
+         '<button class="chip'+(g.k==='cost'?' on':'')+'" data-a="gk" data-v="'+i+'">'+(g.k==='cost'?'Costante':'Una tantum')+'</button></div></div>';
+    });
+  }else if(k==='azioni'){
+    var cs=y.goals.filter(function(g){return g.t&&g.t.trim()&&g.k==='cost'}),os=y.goals.filter(function(g){return g.t&&g.t.trim()&&g.k!=='cost'});
+    if(!cs.length&&!os.length)h+='<p>Prima scrivi i tuoi obiettivi nel passo 9.</p>';
+    if(cs.length){
+      h+='<h3>Costanti → diventano abitudini</h3>';
+      cs.forEach(function(g){
+        var ex=S.habits.some(function(hb){return hb.name===g.t.trim()});
+        h+='<div class="goal"><span class="tx">'+esc(g.t)+'</span>'+(ex?'<span class="badge ok">già abitudine</span>':'<button class="btn sm" data-a="g2h" data-v="'+y.goals.indexOf(g)+'">Aggiungi alle abitudini</button>')+'</div>';
+      });
+    }
+    if(os.length){
+      h+='<h3 style="margin-top:12px">Una tantum → da fare nell\'anno</h3>';
+      os.forEach(function(g){h+='<div class="goal"><span class="tx">'+esc(g.t)+'</span></div>'});
+    }
+  }
+  h+='</div>';
+  var nx=step<STEPS.length-1;
+  h+='<div class="row sp"><button class="btn" data-a="sprev"'+(step===0?' disabled':'')+'>‹ Indietro</button><button class="btn fill" data-a="snext">'+(nx?'Avanti ›':'Fine')+'</button></div>';
+  return h;
+}
+function wheelSvg(){
+  var CX=160,CY=160,R=150,R0=20,y=S.year;
+  function pt(r,deg){return [CX+r*Math.cos(deg*Math.PI/180),CY+r*Math.sin(deg*Math.PI/180)]}
+  function f(n){return n.toFixed(1)}
+  var s='<svg class="wheel" viewBox="0 0 320 320" role="img" aria-label="Ruota della vita">';
+  s+='<circle cx="160" cy="160" r="'+R+'" fill="var(--track)"/>';
+  for(var i=0;i<8;i++){
+    var sc=y.scores[i];if(!sc)continue;
+    var a0=-90+i*45,a1=a0+45,rO=R0+(R-R0)*sc/10;
+    var i0=pt(R0,a0),o0=pt(rO,a0),o1=pt(rO,a1),i1=pt(R0,a1);
+    s+='<path d="M'+f(i0[0])+' '+f(i0[1])+' L'+f(o0[0])+' '+f(o0[1])+' A'+f(rO)+' '+f(rO)+' 0 0 1 '+f(o1[0])+' '+f(o1[1])+' L'+f(i1[0])+' '+f(i1[1])+' A'+R0+' '+R0+' 0 0 0 '+f(i0[0])+' '+f(i0[1])+' Z" fill="'+WCOL[i]+'"/>';
+  }
+  for(var c=1;c<=9;c++)s+='<circle cx="160" cy="160" r="'+(R0+(R-R0)*c/10).toFixed(1)+'" fill="none" stroke="var(--border)" stroke-width=".8" opacity=".7"/>';
+  var sp='';for(var q=0;q<8;q++){var p=pt(R,-90+q*45);sp+='M160 160L'+f(p[0])+' '+f(p[1])+' '}
+  s+='<path d="'+sp+'" stroke="var(--border)" stroke-width="1" fill="none"/>';
+  var a=-90+selSph*45,b=a+45,sc2=y.scores[selSph]||10,rr=R0+(R-R0)*sc2/10;
+  var A=pt(R0,a),B=pt(rr,a),C=pt(rr,b),D=pt(R0,b);
+  s+='<path d="M'+f(A[0])+' '+f(A[1])+' L'+f(B[0])+' '+f(B[1])+' A'+f(rr)+' '+f(rr)+' 0 0 1 '+f(C[0])+' '+f(C[1])+' L'+f(D[0])+' '+f(D[1])+' A'+R0+' '+R0+' 0 0 0 '+f(A[0])+' '+f(A[1])+' Z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>';
+  for(var t=0;t<8;t++){var tp=pt(R-14,-90+t*45+22.5);s+='<text x="'+f(tp[0])+'" y="'+f(tp[1]+4)+'" text-anchor="middle" font-size="12" font-weight="800" fill="var(--ink)" opacity=".75">'+(t+1)+'</text>'}
+  return s+'</svg>';
+}
+
+/* ---------- MESE ---------- */
+function mdata(k){var m=S.months[k];if(!m)m=S.months[k]={goals:[],reflection:''};if(!Array.isArray(m.goals))m.goals=[];return m}
+function vMese(){
+  var k=mkey(mcur),m=mdata(k),Y=mcur.getFullYear(),M=mcur.getMonth();
+  var first=new Date(Y,M,1),dim=new Date(Y,M+1,0).getDate(),off=(first.getDay()+6)%7,tk=dkey(new Date());
+  var full=0;
+  var h='<div class="row sp" style="margin-bottom:12px"><button class="btn sm" data-a="mprev" aria-label="Mese precedente">‹</button><b style="font-size:19px;text-transform:capitalize">'+MESI[M]+' '+Y+'</b><button class="btn sm" data-a="mnext" aria-label="Mese successivo">›</button></div>';
+  h+='<div class="card"><h2>Obiettivi del mese</h2>';
+  if(!m.goals.length)h+='<p class="muted small">Scrivi 3–5 obiettivi per questo mese. Se vuoi, collegali a uno dei tuoi obiettivi annuali.</p>';
+  m.goals.forEach(function(g,i){
+    var lk=(typeof g.l==='number'&&S.year.goals[g.l]&&S.year.goals[g.l].t)?S.year.goals[g.l].t:'';
+    h+='<div class="goal'+(g.d?' done':'')+'"><button class="hab" style="width:auto;flex:none;min-height:44px;padding:8px" data-a="mgd" data-v="'+i+'" aria-pressed="'+(!!g.d)+'" aria-label="Fatto"><span class="ck">'+(g.d?'✓':'')+'</span></button><span class="tx">'+esc(g.t)+(lk?'<br><span class="small muted">↳ '+esc(lk)+'</span>':'')+'</span><button class="x" data-a="mgx" data-v="'+i+'" aria-label="Elimina">✕</button></div>';
+  });
+  h+='<div style="margin-top:8px"><input type="text" id="mgt" placeholder="Nuovo obiettivo del mese" aria-label="Nuovo obiettivo del mese">';
+  var gl=S.year.goals.map(function(g,i){return g.t&&g.t.trim()?'<option value="'+i+'">'+esc(g.t)+'</option>':''}).join('');
+  if(gl)h+='<select id="mgl" style="margin-top:6px" aria-label="Collega a obiettivo annuale"><option value="">Non collegato a un obiettivo annuale</option>'+gl+'</select>';
+  h+='<button class="btn fill sm" style="margin-top:8px" data-a="mga">Aggiungi</button></div></div>';
+  h+='<div class="card"><h2>Le abitudini del mese</h2><div class="cal">';
+  ['L','M','M','G','V','S','D'].forEach(function(x){h+='<div class="h">'+x+'</div>'});
+  for(var e=0;e<off;e++)h+='<div class="c e"></div>';
+  for(var d=1;d<=dim;d++){
+    var dk=Y+'-'+pad(M+1)+'-'+pad(d),r=ratio(dk),lv=r>=1?3:r>=.5?2:r>0?1:0;
+    if(lv===3)full++;
+    h+='<div class="c'+(lv?' l'+lv:'')+(dk===tk?' t':'')+'">'+d+'</div>';
+  }
+  h+='</div><p class="small muted" style="margin:12px 0 0">Verde: tutte le abitudini fatte. Rosa scuro: almeno metà. Rosa chiaro: qualcuna. Giorni completi: <b>'+full+'</b>.</p></div>';
+  h+='<div class="card"><h2>Chiudi il mese e rifletti</h2><textarea data-p="months.'+k+'.reflection" placeholder="Cosa è andato bene? Cosa ho imparato? Cosa cambio il mese prossimo?" aria-label="Riflessione del mese">'+esc(m.reflection||'')+'</textarea></div>';
+  return h;
+}
+
+/* ---------- render & eventi ---------- */
+function render(){
+  var y=window.scrollY;
+  var m=$('#main');
+  m.innerHTML=tab==='oggi'?vOggi():tab==='anno'?vAnno():vMese();
+  document.querySelectorAll('.tb').forEach(function(b){b.setAttribute('aria-current',b.dataset.v===tab?'page':'false')});
+  $('#ttl').textContent={oggi:'Oggi',anno:'Il mio anno',mese:'Il mio mese'}[tab];
+  $('#sub').textContent='Ciao Nicole';
+  window.scrollTo(0,y);
+}
+function onInput(e){
+  var el=e.target;
+  if(el.dataset&&el.dataset.ph){
+    var lines=el.value.split('\n').map(function(x){return x.trim()}).filter(Boolean);
+    S.phrases=lines.length?lines:null;touch();return;
+  }
+  if(el.dataset&&el.dataset.p){
+    var v=el.value;if(el.dataset.n)v=Number(v);
+    setPath(S,el.dataset.p,v);touch();
+  }
+}
+function onClick(e){
+  var b=e.target.closest('[data-a]');if(!b)return;
+  var a=b.dataset.a,v=b.dataset.v,k=dkey(cur),d;
+  switch(a){
+    case 'tab':tab=v;step=null;render();window.scrollTo(0,0);return;
+    case 'dprev':cur.setDate(cur.getDate()-1);render();return;
+    case 'dnext':if(dkey(cur)<dkey(new Date())){cur.setDate(cur.getDate()+1);render()}return;
+    case 'dtoday':cur=new Date();render();return;
+    case 'addgrat':day(k).grat.push('');touch();render();return;
+    case 'hab':d=day(k);d.done[v]=!d.done[v];touch();render();return;
+    case 'water':d=day(k);var n=Number(v);d.water=(d.water===n)?n-1:n;touch();render();return;
+    case 'ans':d=day(k);d.ans=(d.ans===v)?'':v;touch();render();return;
+    case 'addhab':var inp=$('#newhab'),t=inp&&inp.value.trim();if(t){S.habits.push({id:uid2(),name:t,kind:'check'});touch();render()}return;
+    case 'delhab':S.habits=S.habits.filter(function(h){return h.id!==v});touch();render();return;
+    case 'step':step=Number(v);selSph=0;render();window.scrollTo(0,0);return;
+    case 'back':step=null;render();window.scrollTo(0,0);return;
+    case 'sprev':if(step>0){step--;render();window.scrollTo(0,0)}return;
+    case 'snext':if(step<STEPS.length-1)step++;else step=null;render();window.scrollTo(0,0);return;
+    case 'sph':selSph=Number(v);render();return;
+    case 'score':var sv=Number(v);S.year.scores[selSph]=(S.year.scores[selSph]===sv)?0:sv;touch();render();return;
+    case 'gk':var g=S.year.goals[Number(v)];g.k=g.k==='cost'?'once':'cost';touch();render();return;
+    case 'g2h':var gg=S.year.goals[Number(v)];if(gg&&gg.t.trim()&&!S.habits.some(function(h){return h.name===gg.t.trim()})){S.habits.push({id:uid2(),name:gg.t.trim(),kind:'check'});touch();render()}return;
+    case 'mprev':mcur=new Date(mcur.getFullYear(),mcur.getMonth()-1,1);render();return;
+    case 'mnext':mcur=new Date(mcur.getFullYear(),mcur.getMonth()+1,1);render();return;
+    case 'mga':addMG();return;
+    case 'mgd':var mg=mdata(mkey(mcur)).goals[Number(v)];mg.d=!mg.d;touch();render();return;
+    case 'mgx':mdata(mkey(mcur)).goals.splice(Number(v),1);touch();render();return;
+    case 'bkx':exportData();return;
+    case 'bki':$('#impf').click();return;
+    case 'lk':doLink();return;
+    case 'lkno':nolink=true;try{localStorage.setItem(LS+'-nolink','1')}catch(e){}render();return;
+    case 'lku':doUnlink();return;
+    case 'sync':syncMsg='';pull();return;
+  }
+}
+function addMG(){
+  var i=$('#mgt'),t=i&&i.value.trim();if(!t)return;
+  var l=$('#mgl'),g={t:t,d:false};
+  if(l&&l.value!=='')g.l=Number(l.value);
+  mdata(mkey(mcur)).goals.push(g);touch();render();
+}
+document.addEventListener('input',onInput);
+document.addEventListener('change',function(e){
+  if(e.target.id==='impf'){importData(e.target.files&&e.target.files[0]);e.target.value='';return}
+  onInput(e);
+});
+document.addEventListener('click',onClick);
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter')return;
+  if(e.target.id==='newhab'){var b=document.querySelector('[data-a=addhab]');if(b)b.click()}
+  if(e.target.id==='mgt')addMG();
+});
+S=loadLocal();
+render();
+updStatus();
+if(link)pull();
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&link)pull()});
+window.addEventListener('online',function(){if(link)pull()});
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+})();
+</script>
+</body>
+</html>
