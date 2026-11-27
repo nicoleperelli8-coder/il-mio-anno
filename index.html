@@ -122,6 +122,10 @@ var PH=['Il cervello nota ciò su cui lo alleno a guardare: oggi cosa scelgo di 
 'Gratitudine e attenzione vanno insieme: noto di più ciò che ringrazio.',
 'Oggi scelgo con cosa nutrire la mia mente.',
 'Immaginare con chiarezza il risultato aiuta il cervello a riconoscere le occasioni.'];
+var NUOVE=['Senza le basi non ha senso andare avanti: non ha senso prendere integratori se poi mangiamo da McDonald\'s tutti i giorni.',
+'La pillola magica non esiste, in nessun campo della vita.',
+'La cosa più distruttiva non è mentire agli altri, ma a noi stessi: non essere sinceri con noi stessi.'];
+PH=PH.concat(NUOVE);
 var STEPS=[
  ['liberare','Liberare lo spazio','Fai spazio prima di cominciare: fisico, digitale e mentale.'],
  ['perdono','Lettera del perdono','Una lettera per lasciare andare ciò che pesa.'],
@@ -164,6 +168,27 @@ function norm(o){
     o.habits.forEach(function(h){if(h.id==='h-palestra'&&!h.perWeek)h.perWeek=3});
     if(!o.habits.some(function(h){return h.id==='h-gratitudine'}))o.habits.unshift({id:'h-gratitudine',name:'Gratitudine del mattino',kind:'check',from:dkey(new Date()),note:'A voce, dentro di te o sul diario, senza telefono: conta sentirla davvero'});
     o.mig.week=1;
+  }
+  if(!o.mig.routine){
+    var oggi=dkey(new Date());
+    var nuova=function(id,name,note,extra){
+      if(o.habits.some(function(h){return h.id===id||h.name.toLowerCase()===name.toLowerCase()}))return null;
+      var h={id:id,name:name,kind:'check',from:oggi,note:note};for(var x in extra)h[x]=extra[x];return h;
+    };
+    var mattina=[
+      nuova('h-acquacalda','Bicchiere di acqua calda','Ogni mattina, a stomaco vuoto'),
+      nuova('h-vacuum','Vacuum','Ogni mattina, a stomaco vuoto'),
+      nuova('h-linfatico','Risveglio linfatico','Ogni mattina',{list:''}),
+      nuova('h-luce','Uscire alla luce','Ogni mattina, per il ritmo circadiano')
+    ].filter(Boolean);
+    var g=o.habits.map(function(h){return h.id}).indexOf('h-gratitudine');
+    Array.prototype.splice.apply(o.habits,[g+1,0].concat(mattina));
+    [nuova('h-camminata','Camminata','30/40 minuti al giorno'),
+     nuova('h-meditazione','Meditazione','Almeno 3 volte a settimana',{perWeek:3}),
+     nuova('h-recap','Recap della settimana','Indicativamente la domenica',{perWeek:1})
+    ].forEach(function(h){if(h)o.habits.push(h)});
+    if(Array.isArray(o.phrases)&&o.phrases.length)NUOVE.forEach(function(f){if(o.phrases.indexOf(f)<0)o.phrases.push(f)});
+    o.mig.routine=1;
   }
   o.u=o.u||0;o.lastBackup=o.lastBackup||0;return o;
 }
@@ -359,10 +384,14 @@ function vOggi(){
       if(hb.perWeek){
         var wc=weekCount(hb,cur),full=wc>=hb.perWeek;
         cls=full?' on':(o?' part':'');
-        sub=full?'Obiettivo della settimana raggiunto!':(o?'Fatta in questo giorno':'Questa settimana');
+        sub=full?'Obiettivo della settimana raggiunto!':(o?'Fatta in questo giorno':(hb.note||'Questa settimana'));
         cnt='<span class="cnt">'+Math.min(wc,hb.perWeek)+'/'+hb.perWeek+'</span>';
       }
       h+='<button class="hab'+cls+'" data-a="hab" data-v="'+esc(hb.id)+'" aria-pressed="'+o+'"><span class="ck">'+(o||cls===' on'?'✓':'')+'</span><span class="nm">'+esc(hb.name)+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</span>'+cnt+'</button>';
+      if(typeof hb.list==='string'){
+        var hi=S.habits.indexOf(hb);
+        h+='<details style="margin:-4px 0 0 14px"><summary class="small">📋 Elenco degli esercizi</summary><textarea data-p="habits.'+hi+'.list" placeholder="Scrivi un esercizio per riga" aria-label="Elenco esercizi '+esc(hb.name)+'">'+esc(hb.list)+'</textarea></details>';
+      }
     }
   });
   h+='</div>';
@@ -389,6 +418,7 @@ function stepDone(key){
   if(key==='desideri')return y.desires.some(function(t){return t&&t.trim()});
   if(key==='obiettivi')return y.goals.some(function(g){return g.t&&g.t.trim()});
   if(key==='azioni')return y.goals.some(function(g){return g.t&&g.t.trim()&&g.k==='cost'});
+  if(key==='liberare')return !!y.notes.liberatoFatto;
   if(key==='grazie')return !!((y.notes.grazie1||'').trim()||(y.notes.grazie2||'').trim());
   return !!(y.notes[key]||'').trim();
 }
@@ -406,8 +436,18 @@ function vAnno(){
   var s=STEPS[step],k=s[0],y=S.year;
   h+='<button class="btn sm" data-a="back" style="margin-bottom:12px">‹ Tutti i passi</button>';
   h+='<div class="card"><div class="row"><span class="num">'+(step+1)+'</span><h2 style="margin:0">'+esc(s[1])+'</h2></div><p class="muted small" style="margin-top:8px">'+esc(s[2])+'</p>';
-  if(k==='liberare'||k==='perdono'||k==='credenze'||k==='realta'){
-    var pl={liberare:'Cosa voglio lasciare andare? Cassetti, armadi, file, contatti, pensieri…',perdono:'Cara/o … ti perdono per…',credenze:'Cosa credo di me, dei soldi, del lavoro, delle relazioni? Quali credenze mi aiutano e quali mi frenano?',realta:'È un anno dopo e la mia vita è così…'}[k];
+  if(k==='liberare'){
+    var fatto=y.notes.liberatoFatto;
+    h+='<p>Ogni oggetto, come ogni persona, può darci o togliere energia. Per far entrare cose nuove dobbiamo liberare spazio e far capire all\'universo che c\'è posto.</p>';
+    h+='<h3 style="margin-top:14px">Cose</h3><p>Regaliamo, buttiamo o vendiamo quello che non usiamo più, che non ci dà più piacere e non rappresenta la nuova versione di noi: armadio, prodotti, trucchi, cucina…</p><p>Teniamo solo ciò che usiamo davvero, che ci piace usare e vedere. Circondiamoci di cose belle, anche nel piccolo: la tazza sbeccata o la mutanda col pizzo tutto rovinato hanno fatto il loro corso.</p>';
+    h+='<h3 style="margin-top:14px">Spazio digitale</h3><p>Smettiamo di seguire chi non trasmette belle vibes, cancelliamo le app che non usiamo, le foto che non vogliamo più riguardare e i numeri che non vogliamo più chiamare.</p>';
+    h+='<h3 style="margin-top:14px">Cose rimandate</h3><p>Facciamo ciò che abbiamo procrastinato perché ci pesava. Finché non lo facciamo, continuiamo a pensarci: è il momento di liberare anche la mente.</p>';
+    h+='<div class="card soft"><p style="margin:0"><b>Consiglio:</b> prenditi un weekend intero. Ripeti ogni tanto, per esempio al cambio di stagione: è un momento perfetto per un bel decluttering.</p></div>';
+    h+='<p>Alla fine devi sentire leggerezza, come se avessi tolto un peso. È con questa sensazione che vogliamo iniziare il nuovo anno.</p>';
+    h+='<button class="hab'+(fatto?' on':'')+'" data-a="liberato" aria-pressed="'+(!!fatto)+'"><span class="ck">'+(fatto?'✓':'')+'</span><span class="nm">Ho fatto il mio decluttering'+(fatto?'<span class="sub">Fatto il '+esc(String(fatto).split('-').reverse().join('/'))+'</span>':'')+'</span></button>';
+    h+='<label class="lbl" for="lb">Pensieri e sensazioni (se ti va)</label><textarea id="lb" data-p="year.notes.liberare" placeholder="Come mi sento dopo aver fatto spazio…">'+esc(y.notes.liberare||'')+'</textarea>';
+  }else if(k==='perdono'||k==='credenze'||k==='realta'){
+    var pl={perdono:'Cara/o … ti perdono per…',credenze:'Cosa credo di me, dei soldi, del lavoro, delle relazioni? Quali credenze mi aiutano e quali mi frenano?',realta:'È un anno dopo e la mia vita è così…'}[k];
     h+='<textarea data-p="year.notes.'+k+'" style="min-height:260px" placeholder="'+esc(pl)+'" aria-label="'+esc(s[1])+'">'+esc(y.notes[k]||'')+'</textarea>';
   }else if(k==='grazie'){
     h+='<label class="lbl" for="g1">Prima lista</label><textarea id="g1" data-p="year.notes.grazie1" style="min-height:180px" placeholder="Grazie a me stessa per…">'+esc(y.notes.grazie1||'')+'</textarea>';
@@ -537,6 +577,7 @@ function onClick(e){
     case 'hab':d=day(k);var hx=S.habits.filter(function(x){return x.id===v})[0];if(hx&&hx.perWeek&&!d.done[v]&&weekCount(hx,cur)>=hx.perWeek)return;d.done[v]=!d.done[v];touch();render();return;
     case 'water':d=day(k);var n=Number(v);d.water=(d.water===n)?n-1:n;touch();render();return;
     case 'ans':d=day(k);d.ans=(d.ans===v)?'':v;touch();render();return;
+    case 'liberato':S.year.notes.liberatoFatto=S.year.notes.liberatoFatto?'':dkey(new Date());touch();render();return;
     case 'addhab':var inp=$('#newhab'),t=inp&&inp.value.trim();if(t){var nh={id:uid2(),name:t,kind:'check',from:dkey(new Date())},fq=Number($('#newfq').value);if(fq)nh.perWeek=fq;S.habits.push(nh);touch();render()}return;
     case 'delhab':S.habits=S.habits.filter(function(h){return h.id!==v});touch();render();return;
     case 'step':step=Number(v);selSph=0;render();window.scrollTo(0,0);return;
