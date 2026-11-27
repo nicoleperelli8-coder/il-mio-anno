@@ -55,6 +55,10 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
 .gr{display:flex;flex-direction:column;gap:8px;margin:10px 0}
 .hab{display:flex;align-items:center;gap:12px;width:100%;text-align:left;min-height:48px;padding:8px 14px;border-radius:16px;border:1.5px solid var(--border);background:var(--bg);font-weight:600}
 .hab.on{background:var(--sage);border-color:var(--sage);color:var(--onsage)}
+.hab .nm{flex:1}
+.hab .sub{display:block;font-size:13px;font-weight:400;opacity:.8}
+.hab .cnt{font-weight:800;white-space:nowrap}
+.hab.part{border-color:var(--sage);border-width:2.5px}
 .ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--outline,#8B7A6C);display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex:none}
 .hab.on .ck{border-color:var(--onsage)}
 .glasses{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
@@ -155,6 +159,12 @@ function norm(o){
   y.notes=y.notes||{};
   ['scores','wnotes','spheres','desires','goals'].forEach(function(k){if(!Array.isArray(y[k]))y[k]=fy[k]});
   while(y.goals.length<10)y.goals.push({t:'',s:0,k:'once'});
+  o.mig=o.mig||{};
+  if(!o.mig.week){
+    o.habits.forEach(function(h){if(h.id==='h-palestra'&&!h.perWeek)h.perWeek=3});
+    if(!o.habits.some(function(h){return h.id==='h-gratitudine'}))o.habits.unshift({id:'h-gratitudine',name:'Gratitudine del mattino',kind:'check',from:dkey(new Date()),note:'A voce, dentro di te o sul diario, senza telefono: conta sentirla davvero'});
+    o.mig.week=1;
+  }
   o.u=o.u||0;o.lastBackup=o.lastBackup||0;return o;
 }
 function loadLocal(){try{var r=localStorage.getItem(LS);if(r)return norm(JSON.parse(r))}catch(e){}return fresh()}
@@ -238,10 +248,25 @@ function day(k){
   return d;
 }
 function isDone(h,d){return h.kind==='water'?(d.water||0)>=8:!!d.done[h.id]}
+function weekCount(h,date){
+  var m=new Date(date.getFullYear(),date.getMonth(),date.getDate()-(date.getDay()+6)%7),n=0;
+  for(var i=0;i<7;i++){var d=S.days[dkey(new Date(m.getFullYear(),m.getMonth(),m.getDate()+i))];if(d&&d.done&&d.done[h.id])n++}
+  return n;
+}
 function ratio(k){
-  var d=S.days[k];if(!d||!S.habits.length)return 0;
-  var n=0;S.habits.forEach(function(h){if(isDone(h,d))n++});
-  return n/S.habits.length;
+  var d=S.days[k];if(!d)return 0;
+  var n=0,tot=0;
+  S.habits.forEach(function(h){
+    var ok=h.kind==='water'?(d.water||0)>=8:!!(d.done&&d.done[h.id]);
+    if(h.perWeek){if(ok){n++;tot++}}
+    else if(ok||!h.from||k>=h.from){tot++;if(ok)n++}
+  });
+  return tot?n/tot:0;
+}
+function freqSel(attr,val){
+  var h='<select '+attr+' style="width:auto" aria-label="Quante volte"><option value="0">Ogni giorno</option>';
+  for(var i=1;i<=6;i++)h+='<option value="'+i+'"'+(val===i?' selected':'')+'>'+i+(i===1?' volta':' volte')+' a settimana</option>';
+  return h+'</select>';
 }
 var MESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
 var GIORNI=['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
@@ -313,19 +338,13 @@ function vOggi(){
   var k=dkey(cur),d=day(k),today=k===dkey(new Date()),hr=new Date().getHours();
   var ph=(S.phrases&&S.phrases.length)?S.phrases:PH;
   var idx=Math.floor(Date.UTC(cur.getFullYear(),cur.getMonth(),cur.getDate())/86400000)%ph.length;
-  var nd=0;S.habits.forEach(function(h){if(isDone(h,d))nd++});
+  var nd=0;S.habits.forEach(function(h){if(isDone(h,d)||(h.perWeek&&weekCount(h,cur)>=h.perWeek))nd++});
   var h='';
   h+='<div class="row sp" style="margin-bottom:12px"><button class="btn sm" data-a="dprev" aria-label="Giorno precedente">‹</button>'+
      '<div style="text-align:center"><b>'+GIORNI[cur.getDay()]+' '+cur.getDate()+' '+MESI[cur.getMonth()]+'</b>'+(today?'':'<br><button class="btn sm" data-a="dtoday" style="margin-top:4px">Torna a oggi</button>')+'</div>'+
      '<button class="btn sm" data-a="dnext" aria-label="Giorno successivo"'+(today?' disabled':'')+'>›</button></div>';
   h+=vBanner();
   h+='<div class="card soft"><h3>Pensiero del giorno</h3><p style="margin:0;font-size:18px;font-weight:600">'+esc(ph[idx])+'</p></div>';
-  /* mattina */
-  h+='<div class="card"><h2>☀️ Mattina – gratitudine</h2><p class="muted small">Scrivi almeno 3 cose per cui sei grata. Puoi aggiungerne quante vuoi.</p>';
-  h+='<div class="gr">'+d.grat.map(function(g,i){return '<input type="text" data-p="days.'+k+'.grat.'+i+'" value="'+esc(g)+'" placeholder="Sono grata per… ('+(i+1)+')" aria-label="Gratitudine '+(i+1)+'">'}).join('')+'</div>';
-  h+='<button class="btn sm" data-a="addgrat">+ Aggiungi un\'altra</button>';
-  if(today&&hr<12)h+='<p class="small muted" style="margin:10px 0 0">È mattina: questo è il momento giusto per questo spazio.</p>';
-  h+='</div>';
   /* abitudini */
   h+='<div class="card"><div class="row sp"><h2 style="margin:0">Le mie abitudini</h2><span class="badge'+(S.habits.length&&nd===S.habits.length?' ok':'')+'">'+nd+' di '+S.habits.length+'</span></div><div class="gr">';
   if(!S.habits.length)h+='<p class="muted small">Non hai ancora abitudini. Aggiungine una qui sotto.</p>';
@@ -336,14 +355,20 @@ function vOggi(){
       for(var i=1;i<=8;i++)h+='<button class="gl'+(i<=w?' on':'')+'" data-a="water" data-v="'+i+'" aria-label="Bicchiere '+i+'" aria-pressed="'+(i<=w)+'">💧</button>';
       h+='</div><div class="small muted" style="margin-top:6px">Ogni goccia è un bicchiere da 0,25 L</div></div>';
     }else{
-      var o=!!d.done[hb.id];
-      h+='<button class="hab'+(o?' on':'')+'" data-a="hab" data-v="'+esc(hb.id)+'" aria-pressed="'+o+'"><span class="ck">'+(o?'✓':'')+'</span>'+esc(hb.name)+'</button>';
+      var o=!!d.done[hb.id],cls=o?' on':'',sub=hb.note||'',cnt='';
+      if(hb.perWeek){
+        var wc=weekCount(hb,cur),full=wc>=hb.perWeek;
+        cls=full?' on':(o?' part':'');
+        sub=full?'Obiettivo della settimana raggiunto!':(o?'Fatta in questo giorno':'Questa settimana');
+        cnt='<span class="cnt">'+Math.min(wc,hb.perWeek)+'/'+hb.perWeek+'</span>';
+      }
+      h+='<button class="hab'+cls+'" data-a="hab" data-v="'+esc(hb.id)+'" aria-pressed="'+o+'"><span class="ck">'+(o||cls===' on'?'✓':'')+'</span><span class="nm">'+esc(hb.name)+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</span>'+cnt+'</button>';
     }
   });
   h+='</div>';
   h+='<details><summary>Gestisci le abitudini</summary>';
-  h+=S.habits.map(function(hb){return '<div class="goal"><span class="tx">'+esc(hb.name)+(hb.kind==='water'?' <span class="badge">acqua</span>':'')+'</span><button class="x" data-a="delhab" data-v="'+esc(hb.id)+'" aria-label="Elimina '+esc(hb.name)+'">✕</button></div>'}).join('');
-  h+='<div class="row" style="margin-top:6px"><input type="text" id="newhab" placeholder="Nuova abitudine (es. camminata)" style="flex:1" aria-label="Nuova abitudine"><button class="btn fill sm" data-a="addhab">Aggiungi</button></div></details></div>';
+  h+=S.habits.map(function(hb){return '<div class="goal"><span class="tx">'+esc(hb.name)+(hb.kind==='water'?' <span class="badge">acqua</span>':'')+'</span>'+(hb.kind==='water'?'':freqSel('data-fq="'+esc(hb.id)+'"',hb.perWeek||0))+'<button class="x" data-a="delhab" data-v="'+esc(hb.id)+'" aria-label="Elimina '+esc(hb.name)+'">✕</button></div>'}).join('');
+  h+='<div class="row" style="margin-top:6px"><input type="text" id="newhab" placeholder="Nuova abitudine (es. camminata)" style="flex:1" aria-label="Nuova abitudine">'+freqSel('id="newfq"',0)+'<button class="btn fill sm" data-a="addhab">Aggiungi</button></div></details></div>';
   /* sera */
   h+='<div class="card"><h2>🌙 Sera – fermarsi un momento</h2>';
   if(today&&hr>=18)h+='<p class="small muted">È sera: prenditi qualche minuto per te.</p>';
@@ -509,10 +534,10 @@ function onClick(e){
     case 'dnext':if(dkey(cur)<dkey(new Date())){cur.setDate(cur.getDate()+1);render()}return;
     case 'dtoday':cur=new Date();render();return;
     case 'addgrat':day(k).grat.push('');touch();render();return;
-    case 'hab':d=day(k);d.done[v]=!d.done[v];touch();render();return;
+    case 'hab':d=day(k);var hx=S.habits.filter(function(x){return x.id===v})[0];if(hx&&hx.perWeek&&!d.done[v]&&weekCount(hx,cur)>=hx.perWeek)return;d.done[v]=!d.done[v];touch();render();return;
     case 'water':d=day(k);var n=Number(v);d.water=(d.water===n)?n-1:n;touch();render();return;
     case 'ans':d=day(k);d.ans=(d.ans===v)?'':v;touch();render();return;
-    case 'addhab':var inp=$('#newhab'),t=inp&&inp.value.trim();if(t){S.habits.push({id:uid2(),name:t,kind:'check'});touch();render()}return;
+    case 'addhab':var inp=$('#newhab'),t=inp&&inp.value.trim();if(t){var nh={id:uid2(),name:t,kind:'check',from:dkey(new Date())},fq=Number($('#newfq').value);if(fq)nh.perWeek=fq;S.habits.push(nh);touch();render()}return;
     case 'delhab':S.habits=S.habits.filter(function(h){return h.id!==v});touch();render();return;
     case 'step':step=Number(v);selSph=0;render();window.scrollTo(0,0);return;
     case 'back':step=null;render();window.scrollTo(0,0);return;
@@ -544,6 +569,10 @@ function addMG(){
 document.addEventListener('input',onInput);
 document.addEventListener('change',function(e){
   if(e.target.id==='impf'){importData(e.target.files&&e.target.files[0]);e.target.value='';return}
+  if(e.target.dataset&&e.target.dataset.fq){
+    S.habits.forEach(function(h){if(h.id===e.target.dataset.fq){var n=Number(e.target.value);if(n)h.perWeek=n;else delete h.perWeek}});
+    touch();render();var dt=document.querySelector('#newhab');if(dt)dt.closest('details').open=true;return;
+  }
   onInput(e);
 });
 document.addEventListener('click',onClick);
