@@ -59,6 +59,11 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
 .hab .sub{display:block;font-size:13px;font-weight:400;opacity:.8}
 .hab .cnt{font-weight:800;white-space:nowrap}
 .hab.part{border-color:var(--sage);border-width:2.5px}
+.pyr{display:block;width:100%;max-width:420px;margin:10px auto;height:auto}
+.pyr text{font-family:inherit;font-weight:800;font-size:13px;text-anchor:middle}
+.pers{border-top:1px solid var(--border);padding:10px 0}
+.pers input,.pers select,.pers textarea{margin-top:6px}
+.pers textarea{min-height:70px}
 .ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--outline,#8B7A6C);display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex:none}
 .hab.on .ck{border-color:var(--onsage)}
 .glasses{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
@@ -125,7 +130,8 @@ var PH=['Il cervello nota ciò su cui lo alleno a guardare: oggi cosa scelgo di 
 var NUOVE=['Senza le basi non ha senso andare avanti: non ha senso prendere integratori se poi mangiamo da McDonald\'s tutti i giorni.',
 'La pillola magica non esiste, in nessun campo della vita.',
 'La cosa più distruttiva non è mentire agli altri, ma a noi stessi: non essere sinceri con noi stessi.'];
-PH=PH.concat(NUOVE);
+var PH_CONSAPEVOLE='Ogni giorno, ogni mio pensiero e ogni mia parola stanno creando la mia realtà di domani. Sono stata abbastanza consapevole oggi di ciò che sto alimentando dentro di me?';
+PH=PH.concat(NUOVE,[PH_CONSAPEVOLE]);
 var STEPS=[
  ['liberare','Liberare lo spazio','Fai spazio prima di cominciare: fisico, digitale e mentale.'],
  ['perdono','Lettera del perdono','Una lettera per lasciare andare ciò che pesa.'],
@@ -189,6 +195,10 @@ function norm(o){
     ].forEach(function(h){if(h)o.habits.push(h)});
     if(Array.isArray(o.phrases)&&o.phrases.length)NUOVE.forEach(function(f){if(o.phrases.indexOf(f)<0)o.phrases.push(f)});
     o.mig.routine=1;
+  }
+  if(!o.mig.consapevole){
+    if(Array.isArray(o.phrases)&&o.phrases.length&&o.phrases.indexOf(PH_CONSAPEVOLE)<0)o.phrases.push(PH_CONSAPEVOLE);
+    o.mig.consapevole=1;
   }
   o.u=o.u||0;o.lastBackup=o.lastBackup||0;return o;
 }
@@ -446,7 +456,9 @@ function vAnno(){
     h+='<p>Alla fine devi sentire leggerezza, come se avessi tolto un peso. È con questa sensazione che vogliamo iniziare il nuovo anno.</p>';
     h+='<button class="hab'+(fatto?' on':'')+'" data-a="liberato" aria-pressed="'+(!!fatto)+'"><span class="ck">'+(fatto?'✓':'')+'</span><span class="nm">Ho fatto il mio decluttering'+(fatto?'<span class="sub">Fatto il '+esc(String(fatto).split('-').reverse().join('/'))+'</span>':'')+'</span></button>';
     h+='<label class="lbl" for="lb">Pensieri e sensazioni (se ti va)</label><textarea id="lb" data-p="year.notes.liberare" placeholder="Come mi sento dopo aver fatto spazio…">'+esc(y.notes.liberare||'')+'</textarea>';
-  }else if(k==='perdono'||k==='credenze'||k==='realta'){
+  }else if(k==='credenze'){
+    h+=vCredenze(y);
+  }else if(k==='perdono'||k==='realta'){
     var pl={perdono:'Cara/o … ti perdono per…',credenze:'Cosa credo di me, dei soldi, del lavoro, delle relazioni? Quali credenze mi aiutano e quali mi frenano?',realta:'È un anno dopo e la mia vita è così…'}[k];
     h+='<textarea data-p="year.notes.'+k+'" style="min-height:260px" placeholder="'+esc(pl)+'" aria-label="'+esc(s[1])+'">'+esc(y.notes[k]||'')+'</textarea>';
   }else if(k==='grazie'){
@@ -492,6 +504,36 @@ function vAnno(){
   h+='<div class="row sp"><button class="btn" data-a="sprev"'+(step===0?' disabled':'')+'>‹ Indietro</button><button class="btn fill" data-a="snext">'+(nx?'Avanti ›':'Fine')+'</button></div>';
   return h;
 }
+function piramide(){
+  var s='<svg class="pyr" viewBox="0 0 320 270" role="img" aria-label="Piramide: alla base la visione del mondo, poi credenze e programmi, poi identità, in punta le pratiche">';
+  s+='<polygon points="160,6 200,72 120,72" fill="#EBC9C4"/><polygon points="119,75 201,75 240,139 80,139" fill="#C9A27A"/><polygon points="79,142 241,142 280,206 40,206" fill="#8AA283"/><polygon points="39,209 281,209 318,268 2,268" fill="#5A3E2E"/>';
+  s+='<g fill="#2B211C"><text x="160" y="58">4</text><text x="160" y="112">3. Identità</text><text x="160" y="172">2. Credenze</text><text x="160" y="189">e programmi</text></g><text x="160" y="243" fill="#FBF8F5">1. La mia visione del mondo</text></svg>';
+  return s+'<p class="small muted" style="text-align:center">4. In punta: le pratiche (meditazione, visualizzazione, strumenti esoterici…)</p>';
+}
+function vCredenze(y){
+  var h=piramide();
+  h+='<div class="card soft"><p style="margin:0">Non ha senso meditare o visualizzare se nel profondo abbiamo credenze e programmi completamente diversi. Le pratiche in punta sono come gli integratori: se mangiamo sempre male, non cambia nulla. Il cervello metterà sempre in atto i nostri pensieri più profondi.</p></div>';
+  h+='<h3>I nostri 3 bisogni primari</h3><p>Amare ed essere amati e accettati, essere in salute, avere abbastanza soldi per stare bene.</p>';
+  h+='<h3>1. La visione del mondo</h3><p>È l\'immagine di come funziona il mondo, di come si comportano le donne, gli uomini e così via. Se nel profondo, anche senza accorgercene, pensiamo che sia tutto difficile, il cervello cercherà conferme e ci farà vedere soprattutto quelle.</p><p>Queste idee le interiorizziamo con le esperienze della vita, soprattutto da piccolissimi. Se ne diventiamo consapevoli e iniziamo a scavare, possiamo cambiarle.</p>';
+  h+=ta('year.notes.visione',y.notes.visione,'Per me il mondo è… le donne sono… gli uomini sono…');
+  h+='<h3>2. Credenze e programmi</h3><p>Nascono dalla nostra visione del mondo e possono limitarci.</p>';
+  h+=ta('year.notes.credenze',y.notes.credenze,'Cosa credo di me, dei soldi, del lavoro, delle relazioni? Quali credenze mi aiutano e quali mi frenano?');
+  h+='<h3>3. L\'identità</h3><p>È l\'insieme di tutti i pensieri su di noi. Ognuno ha un esercito di personalità, ciascuna con la sua vocina e i suoi comportamenti, e ognuna è nata da un nostro bisogno. Per esempio, la personalità "sono grassa" mangia male e beve sempre la birra.</p><p><b>Esercizio:</b> elenca le tue personalità, positive e negative, e rinforza quelle positive.</p>';
+  (y.personas||[]).forEach(function(x,i){
+    var b='year.personas.'+i+'.';
+    h+='<div class="pers"><div class="row sp"><b>Personalità '+(i+1)+'</b><button class="x" data-a="delpers" data-v="'+i+'" aria-label="Elimina personalità '+(i+1)+'">✕</button></div>';
+    h+='<input type="text" data-p="'+b+'n" value="'+esc(x.n||'')+'" placeholder="Io sono…" aria-label="Nome della personalità">';
+    h+='<select data-p="'+b+'t" aria-label="Positiva o negativa">'+[['','Positiva o negativa?'],['pos','Positiva: da rinforzare'],['neg','Negativa']].map(function(o){return '<option value="'+o[0]+'"'+((x.t||'')===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select>';
+    h+=ta(b+'v',x.v,'La sua vocina: cosa mi dice?')+ta(b+'c',x.c,'I suoi comportamenti')+ta(b+'b',x.b,'Da quale mio bisogno è nata?')+'</div>';
+  });
+  h+='<button class="btn sm" data-a="addpers">+ Aggiungi una personalità</button>';
+  h+='<h3 style="margin-top:16px">Ora chiediti</h3>';
+  [['comesono','Come sono io?'],['pensodime','Cosa penso di me stessa?'],['ripeto','Quali pensieri su di me ripeto più spesso?']].forEach(function(q){
+    h+='<label class="lbl">'+q[1]+'</label>'+ta('year.notes.'+q[0],y.notes[q[0]],q[1]);
+  });
+  return h;
+}
+function ta(path,val,ph){return '<textarea style="margin-bottom:10px" data-p="'+path+'" placeholder="'+esc(ph)+'" aria-label="'+esc(ph)+'">'+esc(val||'')+'</textarea>'}
 function wheelSvg(){
   var CX=160,CY=160,R=150,R0=20,y=S.year;
   function pt(r,deg){return [CX+r*Math.cos(deg*Math.PI/180),CY+r*Math.sin(deg*Math.PI/180)]}
@@ -577,6 +619,8 @@ function onClick(e){
     case 'hab':d=day(k);var hx=S.habits.filter(function(x){return x.id===v})[0];if(hx&&hx.perWeek&&!d.done[v]&&weekCount(hx,cur)>=hx.perWeek)return;d.done[v]=!d.done[v];touch();render();return;
     case 'water':d=day(k);var n=Number(v);d.water=(d.water===n)?n-1:n;touch();render();return;
     case 'ans':d=day(k);d.ans=(d.ans===v)?'':v;touch();render();return;
+    case 'addpers':if(!Array.isArray(S.year.personas))S.year.personas=[];S.year.personas.push({n:'',t:'',v:'',c:'',b:''});touch();render();return;
+    case 'delpers':if(confirm('Eliminare questa personalità?')){S.year.personas.splice(Number(v),1);touch();render()}return;
     case 'liberato':S.year.notes.liberatoFatto=S.year.notes.liberatoFatto?'':dkey(new Date());touch();render();return;
     case 'addhab':var inp=$('#newhab'),t=inp&&inp.value.trim();if(t){var nh={id:uid2(),name:t,kind:'check',from:dkey(new Date())},fq=Number($('#newfq').value);if(fq)nh.perWeek=fq;S.habits.push(nh);touch();render()}return;
     case 'delhab':S.habits=S.habits.filter(function(h){return h.id!==v});touch();render();return;
