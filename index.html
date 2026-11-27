@@ -510,15 +510,23 @@ function piramide(){
   s+='<g fill="#2B211C"><text x="160" y="58">4</text><text x="160" y="112">3. Identità</text><text x="160" y="172">2. Credenze</text><text x="160" y="189">e programmi</text></g><text x="160" y="243" fill="#FBF8F5">1. La mia visione del mondo</text></svg>';
   return s+'<p class="small muted" style="text-align:center">4. In punta: le pratiche (meditazione, visualizzazione, strumenti esoterici…)</p>';
 }
+function es(titolo,righe){
+  return '<details style="margin-bottom:6px"><summary class="small">💡 '+titolo+'</summary>'+righe.map(function(r){return '<p class="small">'+r+'</p>'}).join('')+'</details>';
+}
 function vCredenze(y){
   var h=piramide();
   h+='<div class="card soft"><p style="margin:0">Non ha senso meditare o visualizzare se nel profondo abbiamo credenze e programmi completamente diversi. Le pratiche in punta sono come gli integratori: se mangiamo sempre male, non cambia nulla. Il cervello metterà sempre in atto i nostri pensieri più profondi.</p></div>';
   h+='<h3>I nostri 3 bisogni primari</h3><p>Amare ed essere amati e accettati, essere in salute, avere abbastanza soldi per stare bene.</p>';
   h+='<h3>1. La visione del mondo</h3><p>È l\'immagine di come funziona il mondo, di come si comportano le donne, gli uomini e così via. Se nel profondo, anche senza accorgercene, pensiamo che sia tutto difficile, il cervello cercherà conferme e ci farà vedere soprattutto quelle.</p><p>Queste idee le interiorizziamo con le esperienze della vita, soprattutto da piccolissimi. Se ne diventiamo consapevoli e iniziamo a scavare, possiamo cambiarle.</p>';
+  h+=es('Come si collegano i livelli',['<b>Visione del mondo:</b> «Nella vita è tutto difficile».','<b>Credenza:</b> «Per guadagnare devo faticare tantissimo».','<b>Identità:</b> «Io sono una che fa sempre fatica».','<b>Pratica in punta:</b> visualizzo l\'abbondanza. Se sotto restano questi tre pensieri, la visualizzazione da sola non basta.']);
+  h+=es('Esempi di visione del mondo',['«Il mondo è pericoloso, non ci si può fidare» oppure «In giro ci sono tante persone disposte ad aiutare».','«Gli uomini tradiscono tutti» oppure «Esistono relazioni sincere».','«Le donne sono sempre in competizione» oppure «Le donne sanno sostenersi».']);
   h+=ta('year.notes.visione',y.notes.visione,'Per me il mondo è… le donne sono… gli uomini sono…');
   h+='<h3>2. Credenze e programmi</h3><p>Nascono dalla nostra visione del mondo e possono limitarci.</p>';
+  h+=es('Esempi di credenze, e come rispondere',['«I soldi sono sporchi» → «I soldi sono uno strumento, conta come li uso».','«Non sono portata» → «Posso imparare con la pratica».','«Se dico di no, non mi vorranno bene» → «Posso dire di no con rispetto».','<b>Per scavare:</b> chi me l\'ha detto? Quando ho iniziato a crederlo? È vero sempre? Quali prove ho del contrario?']);
   h+=ta('year.notes.credenze',y.notes.credenze,'Cosa credo di me, dei soldi, del lavoro, delle relazioni? Quali credenze mi aiutano e quali mi frenano?');
   h+='<h3>3. L\'identità</h3><p>È l\'insieme di tutti i pensieri su di noi. Ognuno ha un esercito di personalità, ciascuna con la sua vocina e i suoi comportamenti, e ognuna è nata da un nostro bisogno. Per esempio, la personalità "sono grassa" mangia male e beve sempre la birra.</p><p><b>Esercizio:</b> elenca le tue personalità, positive e negative, e rinforza quelle positive.</p>';
+  h+=es('Esempio: una personalità da cambiare',['<b>Io sono:</b> disordinata.','<b>Vocina:</b> «Tanto domani è di nuovo tutto in disordine».','<b>Comportamenti:</b> lascio le cose in giro, rimando.','<b>Bisogno:</b> riposo, sentirmi libera dalle regole.']);
+  h+=es('Esempio: una personalità da rinforzare',['<b>Io sono:</b> una persona che si prende cura di sé.','<b>Vocina:</b> «Anche 10 minuti contano».','<b>Comportamenti:</b> cammino, bevo acqua, vado a dormire presto.','<b>Bisogno:</b> stare in salute.','<b>Come rinforzarla:</b> ogni giorno un piccolo gesto che farebbe questa personalità.']);
   (y.personas||[]).forEach(function(x,i){
     var b='year.personas.'+i+'.';
     h+='<div class="pers"><div class="row sp"><b>Personalità '+(i+1)+'</b><button class="x" data-a="delpers" data-v="'+i+'" aria-label="Elimina personalità '+(i+1)+'">✕</button></div>';
@@ -528,6 +536,7 @@ function vCredenze(y){
   });
   h+='<button class="btn sm" data-a="addpers">+ Aggiungi una personalità</button>';
   h+='<h3 style="margin-top:16px">Ora chiediti</h3>';
+  h+=es('Esempi di risposte',['<b>Come sono io?</b> «Sono generosa, ma mi metto sempre per ultima».','<b>Cosa penso di me?</b> «Penso di essere capace, ma non abbastanza sicura».','<b>Cosa ripeto più spesso?</b> «Non ho tempo», «Sono sempre la solita», oppure «Ce la posso fare».']);
   [['comesono','Come sono io?'],['pensodime','Cosa penso di me stessa?'],['ripeto','Quali pensieri su di me ripeto più spesso?']].forEach(function(q){
     h+='<label class="lbl">'+q[1]+'</label>'+ta('year.notes.'+q[0],y.notes[q[0]],q[1]);
   });
